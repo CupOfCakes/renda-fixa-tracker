@@ -112,3 +112,4 @@ def print_all_rates():
 
     for key, valor in net_cdi.items():
         print(f"{key}: {valor}")
+
