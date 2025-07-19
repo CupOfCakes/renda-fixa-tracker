@@ -44,8 +44,9 @@ def get_ipca_rate():
     except Exception as e:
         return "Erro ao obter a taxa Selic: ", e
 
+
 def get_gross_cdi_rate():
-    for i in range(2):
+    for i in range(10):
         date = (datetime.now() - timedelta(days=i)).strftime("%d/%m/%Y")
 
         url_cdi = (
@@ -58,7 +59,7 @@ def get_gross_cdi_rate():
             response.raise_for_status()
             data = response.json()
 
-            if data:
+            if data and isinstance(data, list):
                 return data[0]
 
         except requests.RequestException as e:
@@ -70,14 +71,44 @@ def get_gross_cdi_rate():
 
 def get_net_cdi_rate():
     gross_cdi = get_gross_cdi_rate()
-    nominal_gross_cdi = float(gross_cdi["valor"])/100
+    nominal_gross_cdi = float(gross_cdi["valor"]) / 100
 
     ipca = get_ipca_rate()
-    ipca = float(ipca["valor"])/100
+    ipca = float(ipca["valor"]) / 100
 
-    net_cdi = (((1 + nominal_gross_cdi) / (1 + ipca)) - 1) * 100
+    faixas_ir = {
+        "180": 22.5,
+        "360": 20.0,
+        "720": 17.5,
+        "720+": 15.0
+    }
 
-    return round(net_cdi, 2)
+    resultado = {}
+
+    for faixa, aliquota in faixas_ir.items():
+        taxa_liquida = nominal_gross_cdi * (1 - aliquota / 100)
+
+        taxa_real = (((1 + taxa_liquida) / (1 + ipca)) - 1) * 100
+
+        resultado[faixa] = round(taxa_real, 2)
+
+    return resultado
 
 
-print(get_net_cdi_rate())
+def print_all_rates():
+    gross_cdi = get_gross_cdi_rate()
+    net_cdi = get_net_cdi_rate()
+    selic = get_selic_rate()
+    ipca = get_ipca_rate()
+
+    print(
+        "NAME        DATE        RATE\n"
+        f"SELIC       {selic["data"]}  {selic["valor"]}\n"
+        f"GROSS CDI   {gross_cdi["data"]}  {gross_cdi["valor"]}\n"
+        f"IPCA        {ipca["data"]}  {ipca["valor"]}\n"
+        "------------------------------\n"
+        "NET CDI\n"
+    )
+
+    for key, valor in net_cdi.items():
+        print(f"{key}: {valor}")
