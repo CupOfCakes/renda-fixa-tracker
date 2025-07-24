@@ -33,8 +33,7 @@ def get_data():
     return data
 
 
-def write_csv():
-    file_path = "../data/rates.csv"
+def write_csv(file_path="../data/rates.csv"):
     datas = get_data()
     header = ["name", "date", "value"]
 
@@ -51,4 +50,3 @@ def write_csv():
     print(f"{len(filtred_data)} registros salvos com sucesso!!!")
 
 
-write_csv()
