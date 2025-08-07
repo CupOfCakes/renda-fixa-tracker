@@ -16,6 +16,7 @@ Could I just ChatGPT to insert everthing? YES, but that wouldn't be much fun.
 ## FIRST STEP: Create the server
 
 The image below shows how to do it:
+
 ![img.png](img.png)
 
 - On the **General** tab, give your server a name;
