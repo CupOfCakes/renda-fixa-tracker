@@ -56,6 +56,18 @@ In this file, I had to add a new line at the end
 > ⚠️ **Note**: It's dangerous use thi's IP permission, so I recommend use specific IPs, 
 I'm reporting this because I learned it during my studies.
 
+Example of specif IP permision:
+
+`host    all             all             123.456.789.10/32               md5`
+
+To give permission to a specific IP address, replace `0.0.0.0` with the IP you want to allow. The `/32` is a CIDR notation that means you're granting access to a single IP address.
+
+why `/32`? This number, known as CIDR notation, defines the range of IP addresses that have access. A `/32` is used to allow a single, specific IP address.
+
+The CIDR value can range from 32 down to 0. A simple rule of thumb is: the lower the number, the larger the range of IPs you're allowing. For example, `/24` gives access to 256 IPs, while `/16` opens it up to 65,536 IPs.
+
+For a more detailed explanation of CIDR notation, you can check out this article: [Link about IP range - networkproguide.com](https://networkproguide.com/cidr-subnet-mask-ipv4-cheat-sheet/?utm_source=chatgpt.com)
+
 2. postgresql.conf
 
 Make sure the following line is set:
